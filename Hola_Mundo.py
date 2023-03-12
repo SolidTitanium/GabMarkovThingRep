@@ -61,10 +61,7 @@ for index, tiempo in enumerate(MN):
 poblacion_array = np.array(MN[0], dtype = np.float32)
 matrizTransicion_array = np.matrix(matrizTransicion, dtype = np.float32)
 C = matrizTransicion_array
-
-for i in range(t):
-    C = np.dot(C, matrizTransicion_array)
-    
+C = np.linalg.matrix_power(C, t)
 mn = np.dot(poblacion_array, C)
 mn = mn/N
 mn = np.ravel(mn)
