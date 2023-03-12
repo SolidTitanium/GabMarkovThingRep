@@ -1,15 +1,23 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Definición de funciones
+# Definición de funciones y otros
 
 # Gracias ChatGPT por la magia negra y por ser mi compa
 def markov_simulation(P, n, init_state):
     states = [init_state]
     for i in range(n-1):
         next_state = np.random.choice([0, 1, 2], p=P[states[-1]])
-        states.append(next_state)
+        states.append(next_state) 
     return states.pop(1)
+
+def agregarPoblacion(tipo, MNBuff):
+    MNBuff[tipo] += 1
+    return MNBuff
+
+def construirMN(MNBuff, MN):
+    MN.append(MNBuff)
+    return MN
 
 # Definición de constantes
 
@@ -27,18 +35,23 @@ N = int(input())
 print("Dame un tiempo discreto")
 t = int(input())
 
-#---
+# Decalración de variables
 
-MN =[list(map(lambda x: int(x*N), proporciones))]
-print(MN)
+t_actual = 1
+MN = [list(map(lambda x: int(x*N), proporciones))]
+MNBuff = [0, 0, 0]
 
-#---
-#Pruebas de simulación
+# Ciclo de simulación
 
-# count = 0
-# for j in range(3):
-#     for i in range(int(N * MN_t0[j])):
-#         count += 1
-#         print(count, "Tipo:", translatedict[j], "-->", translatedict[markov_simulation(Matriz, 2, j)])
+while t_actual <= t:
+    for j in range(3):
+        for i in range(MN[t_actual - 1][j]):
+            MNBuff = agregarPoblacion(markov_simulation(matrizTransicion, 2, j), MNBuff)
+    MN = construirMN(MNBuff, MN)
+    MNBuff = [0, 0, 0]
+    t_actual += 1
 
-#---
+# Impresión de resultados
+
+for index, tiempo in enumerate(MN):
+    print("tiempo:", index, "Historia:", tiempo)
