@@ -35,7 +35,7 @@ N = int(input())
 print("Dame un tiempo discreto")
 t = int(input())
 
-# Decalración de variables
+# Declaración de variables
 
 t_actual = 1
 MN = [list(map(lambda x: int(x*N), proporciones))]
@@ -43,15 +43,33 @@ MNBuff = [0, 0, 0]
 
 # Ciclo de simulación
 
-while t_actual <= t:
-    for j in range(3):
-        for i in range(MN[t_actual - 1][j]):
-            MNBuff = agregarPoblacion(markov_simulation(matrizTransicion, 2, j), MNBuff)
-    MN = construirMN(MNBuff, MN)
-    MNBuff = [0, 0, 0]
-    t_actual += 1
+# while t_actual <= t:
+#     for j in range(3):
+#         for i in range(MN[t_actual - 1][j]):
+#             MNBuff = agregarPoblacion(markov_simulation(matrizTransicion, 2, j), MNBuff)
+#     MN = construirMN(MNBuff, MN)
+#     MNBuff = [0, 0, 0]
+#     t_actual += 1
 
 # Impresión de resultados
 
 for index, tiempo in enumerate(MN):
     print("tiempo:", index, "Historia:", tiempo)
+
+# --- FIN PARTE A ---
+
+poblacion_array = np.array(MN[0], dtype = np.float32)
+matrizTransicion_array = np.matrix(matrizTransicion, dtype = np.float32)
+C = matrizTransicion_array
+
+for i in range(t):
+    C = np.dot(C, matrizTransicion_array)
+    
+mn = np.dot(poblacion_array, C)
+mn = mn/N
+mn = np.ravel(mn)
+mnclasic = np.array(MN[-1], dtype = np.float32)
+mnclasic = mnclasic/N
+
+print("mn:", mn, "mnclasic:", mnclasic)
+print(np.linalg.norm(mn - mnclasic, ord = np.inf))
