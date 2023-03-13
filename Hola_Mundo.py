@@ -89,5 +89,9 @@ for t , i in enumerate(mnlist):
 for t, diff in enumerate(diffs):
     print(t, ":", diff)
 
+maxdiff = max(enumerate(diffs), key = lambda x: x[1])
+print("Máxima diferencia: t =", maxdiff[0] + 1, "valor =", maxdiff[1])
+
 plt.plot(diffs)
+plt.ylim(0, 1)
 plt.show()
