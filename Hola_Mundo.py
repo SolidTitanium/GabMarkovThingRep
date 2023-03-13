@@ -65,7 +65,7 @@ C = matrizTransicion_array
 
 mnlist = []
 
-for i in range(t): # loop para multiplicarpor cada MN(t)
+for i in range(t): # loop para multiplicar por cada MN(t)
     mnlist.append(np.dot(poblacion_array, np.linalg.matrix_power(C, i))/N)
 
 # C = np.linalg.matrix_power(C, t)
@@ -83,6 +83,11 @@ diffs = [np.linalg.norm(b - a, ord = np.inf) for a, b in list(zip(propMN_array, 
 # print("mn:", mn, "mnclasic:", mnclasic)
 # print(np.linalg.norm(mn - mnclasic, ord = np.inf))
 
-print(diffs)
+for t , i in enumerate(mnlist):
+    print(t, ":", i)
+
+for t, diff in enumerate(diffs):
+    print(t, ":", diff)
+
 plt.plot(diffs)
 plt.show()
