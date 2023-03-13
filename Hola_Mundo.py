@@ -43,17 +43,18 @@ MNBuff = [0, 0, 0]
 
 # Ciclo de simulación
 
-# while t_actual <= t:
-#     for j in range(3):
-#         for i in range(MN[t_actual - 1][j]):
-#             MNBuff = agregarPoblacion(markov_simulation(matrizTransicion, 2, j), MNBuff)
-#     MN = construirMN(MNBuff, MN)
-#     MNBuff = [0, 0, 0]
-#     t_actual += 1
+while t_actual <= t:
+    for j in range(3):
+        for i in range(MN[t_actual - 1][j]):
+            MNBuff = agregarPoblacion(markov_simulation(matrizTransicion, 2, j), MNBuff)
+    MN = construirMN(MNBuff, MN)
+    MNBuff = [0, 0, 0]
+    t_actual += 1
 
 # Impresión de resultados
+propMN = list(map(lambda x: list(map(lambda y: y/N, x)), MN)) #Lambda black magic
 
-for index, tiempo in enumerate(MN):
+for index, tiempo in enumerate(propMN):
     print("tiempo:", index, "Historia:", tiempo)
 
 # --- FIN PARTE A ---
@@ -61,12 +62,27 @@ for index, tiempo in enumerate(MN):
 poblacion_array = np.array(MN[0], dtype = np.float32)
 matrizTransicion_array = np.matrix(matrizTransicion, dtype = np.float32)
 C = matrizTransicion_array
-C = np.linalg.matrix_power(C, t)
-mn = np.dot(poblacion_array, C)
-mn = mn/N
-mn = np.ravel(mn)
-mnclasic = np.array(MN[-1], dtype = np.float32)
-mnclasic = mnclasic/N
 
-print("mn:", mn, "mnclasic:", mnclasic)
-print(np.linalg.norm(mn - mnclasic, ord = np.inf))
+mnlist = []
+
+for i in range(t): # loop para multiplicarpor cada MN(t)
+    mnlist.append(np.dot(poblacion_array, np.linalg.matrix_power(C, i))/N)
+
+# C = np.linalg.matrix_power(C, t)
+# mn = np.dot(poblacion_array, C)
+
+propMN_array = list(map(lambda x: np.array(x, dtype = np.float32), propMN)) #convertir lista a lista de arrays
+
+diffs = [np.linalg.norm(b - a, ord = np.inf) for a, b in list(zip(propMN_array, mnlist))] #list comprehension black magic
+
+# mn = mn/N
+# mn = np.ravel(mn)
+# mnclasic = np.array(MN[-1], dtype = np.float32)
+# mnclasic = mnclasic/N
+
+# print("mn:", mn, "mnclasic:", mnclasic)
+# print(np.linalg.norm(mn - mnclasic, ord = np.inf))
+
+print(diffs)
+plt.plot(diffs)
+plt.show()
